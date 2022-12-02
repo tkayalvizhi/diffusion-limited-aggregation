@@ -2,7 +2,7 @@
 <i>" "Diffusion" because the particles forming the structure wander around randomly before attaching themselves ("Aggregating") to the structure. "Diffusion-limited" because the particles are considered to be in low concentrations so they don't come in contact with each other and the structure grows one particle at a time rather then by chunks of particles.... "</i> 
 reference: http://paulbourke.net/fractals/dla/
 
-<img src="simulation_results/sim_5_loop.gif" width="300" height="300" />
+<img align="center" src="simulation_results/sim_15_loop.gif" width="300" height="300" />
 
 ## Objective:
 Computer simluate DLA. 
@@ -71,14 +71,14 @@ the particle and the aggregated particles before the random walk begins.
 
  ## [Simulation Results](simulation_results)
  * [sim1](simulation_results/sim1) - stickiness factor = 1, max_dist = 1000, iterations = 2000, attractor = center
- <img src="simulation_results/sim_1_loop.gif" width="300" height="300" />
+ <img align="center" src="simulation_results/sim_1_loop.gif" width="300" height="300" />
  
  * [sim2](simulation_results/sim4) -  stickiness factor = 0.5, max_dist = 500, iterations = 3500, attractor = center
- <img src="simulation_results/sim_4_loop.gif" width="300" height="300" />
+ <img align="center" src="simulation_results/sim_5_loop.gif" width="300" height="300" />
  
   * [sim3](simulation_results/sim5) -  stickiness factor = 0.5, max_dist = 500, iterations = 3500, attractor = nearest neighbour
- <img src="simulation_results/sim_5_loop.gif" width="300" height="300" />
+ <img align="center" src="simulation_results/sim_14_loop.gif" width="300" height="300" />
  
-  * [sim4](simulation_results/sim8) -  stickiness factor = 0.2, max_dist = 300, iterations = 3500, attractor = nearest neighbour
- <img src="simulation_results/sim_8_loop.gif" width="300" height="300" />
+  * [sim4](simulation_results/sim8) -  stickiness factor = 0.2, max_dist = 300, iterations = 20000, attractor = nearest neighbour
+ <img align="center" src="simulation_results/sim_15_loop.gif" width="300" height="300" />
  
