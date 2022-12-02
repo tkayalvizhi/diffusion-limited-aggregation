@@ -1,4 +1,3 @@
-import sys
 import os
 
 from tkinter import *
@@ -66,15 +65,17 @@ class DlaSimulation(object):
 
 
 if __name__ == "__main__":
-    dim = int(sys.argv[1])
-    if dim < 101:
-        raise Exception("Minimum field dimension is 101")
 
     if sys.argv[7].lower() == 'true':
         from_edge = True
     else:
         from_edge = False
-    DlaSimulation(dimension=dim,
+
+    file = open("arguments.txt", 'a')
+    file.write(f'{sys.argv}\n')
+    file.close()
+
+    DlaSimulation(dimension=int(sys.argv[1]),
                   stickiness=float(sys.argv[2]),
                   drift=float(sys.argv[3]),
                   max_dist=int(sys.argv[4]),
