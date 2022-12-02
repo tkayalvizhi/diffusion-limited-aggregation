@@ -65,24 +65,6 @@ class Field(object):
         self.scale = 20
         self.count = 0
 
-    def random_step(self, particle: Particle) -> Particle:
-        """
-        The particle takes a random step in the direction of the nearest aggregated particle
-        The direction depends on the transition probability.
-        :return: particle after taking a random step
-        """
-        self.matrix[particle.get_position()] = 0
-        unoccupied_pixels = self.get_unoccupied_nbr_pixels(particle)
-        nearest = self.aggregated_particles.nearest_neighbour(particle.pos)
-        # drift towards nearest aggregated particle
-        cdf = np.cumsum(self.add_drift(unoccupied_pixels, particle, nearest))
-        # sample a direction from the cumulative distribution function of directions
-        direction = bisect_left(cdf, np.random.random())
-        # take a step in the direction
-        particle.move(direction)
-        self.matrix[particle.get_position()] = 1
-        return particle
-
     def random_walk(self, num_iter=40000):
         """
         random walk is a generator function that performs the random walk for the number of iterations given.
@@ -91,16 +73,18 @@ class Field(object):
         :param num_iter: number of walks to take
         :returns: yields current field matrix (ndarray) and the current iteration (int)
         """
+        particle = Particle.random(self.M)
         yield self.matrix, self.count
         while self.count < num_iter:
-            particle = self.generate_particle()
+            particle = self.generate_particle(particle)
+            distance = self.aggregated_particles.nearest_neighbour_dist(particle.get_position())
 
-            while not self.aggregated_particles.contains(particle.pos):
+            while distance > 0:
                 # yield for every step
                 # yield self.matrix, self.count
 
                 # if particle is an outlier
-                if self.aggregated_particles.nearest_neighbour_dist(particle.pos) > self.max_dist:
+                if distance > self.max_dist:
                     # remove particle and start over again
                     self.matrix[particle.get_position()] = 0
                     break
@@ -108,13 +92,19 @@ class Field(object):
                 try:
                     particle = self.random_step(particle)
                 except NoValidDirectionError:
-                    self.aggregated_particles.insert(particle.pos)
+                    self.aggregated_particles.insert(particle.get_position())
+                    distance = 0
                     continue
 
                 # for each neighbouring aggregated particle,
                 # the current particle has "stickiness" probability of getting aggregated
                 if np.random.random() < (self.stickiness * self.get_aggregated_nbr_count(particle)):
-                    self.aggregated_particles.insert(particle.pos)
+                    self.aggregated_particles.insert(particle.get_position())
+                    distance = 0
+                    continue
+
+                distance = self.aggregated_particles.nearest_neighbour_dist(particle.get_position())
+
             else:
                 # if aggregated
                 # increment iteration counter
@@ -124,6 +114,24 @@ class Field(object):
                 self.matrix[particle.get_position()] = 1
                 print(f"iteration: {self.count}")
                 yield self.matrix, self.count
+
+    def random_step(self, particle: Particle) -> Particle:
+        """
+        The particle takes a random step in the direction of the nearest aggregated particle
+        The direction depends on the transition probability.
+        :return: particle after taking a random step
+        """
+        self.matrix[particle.get_position()] = 0
+        unoccupied_pixels = self.get_unoccupied_nbr_pixels(particle)
+        nearest = self.aggregated_particles.nearest_neighbour(particle.get_position())
+        # drift towards nearest aggregated particle
+        cdf = np.cumsum(self.add_drift(unoccupied_pixels, particle, nearest))
+        # sample a direction from the cumulative distribution function of directions
+        direction = bisect_left(cdf, np.random.random())
+        # take a step in the direction
+        particle.move(direction)
+        self.matrix[particle.get_position()] = 1
+        return particle
 
     def get_boundary_indices(self) -> list:
         """
@@ -135,21 +143,22 @@ class Field(object):
 
         return list(set(all_pixels.flatten()).difference(set(pixels_excluding_boundary.flatten())))
 
-    def generate_particle(self) -> Particle:
+    def generate_particle(self, particle: Particle) -> Particle:
         """
         generate_particle generates a particle at a random pixel in the Field.
         :return: (Particle) a particle.
         """
         if self.from_edge:
             index = np.random.choice(self.boundary_indices, 1)
-            particle = Particle.from_index(index, self.M)
+            # particle = Particle.from_index(index, self.M)
+            particle.set_new_position(index % self.M, index // self.M)
         else:
             index = list(np.random.randint(0, self.M, 2))
             dist = self.aggregated_particles.nearest_neighbour_dist(index)
             while dist > self.max_dist or dist < 100:
                 index = list(np.random.randint(0, self.M, 2))
                 dist = self.aggregated_particles.nearest_neighbour_dist(index)
-            particle = Particle(int(index[X]), int(index[Y]), self.M)
+            particle.set_new_position(int(index[X]), int(index[Y]))
 
         self.matrix[particle.get_position()] = 1
         return particle
@@ -209,11 +218,3 @@ class Field(object):
                 unoccupied_nbrs[[NE, N, NW]] += unoccupied_nbrs[[NE, N, NW]] * self.drift
 
         return unoccupied_nbrs / np.sum(unoccupied_nbrs)
-
-    def is_outlier(self, particle: Particle) -> bool:
-        """
-        is_outlier checks if a particle is an outlier to the aggregated particles.
-        :param particle: (Particle)
-        :return: returns true if particle is outlier and false otherwise
-        """
-        return self.aggregated_particles.nearest_neighbour_dist(particle.pos) > self.max_dist

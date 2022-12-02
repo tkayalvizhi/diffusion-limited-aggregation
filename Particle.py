@@ -1,3 +1,5 @@
+import numpy as np
+
 X = 0
 Y = 1
 
@@ -22,12 +24,33 @@ class Particle:
                             [-1, 0], [1, 0],
                             [-1, 1], [0, 1], [1, 1]]
 
+    @classmethod
+    def from_index(cls, index, M):
+        """
+        from_index method creates a Particle object from the index of a pixel of the image.
+        :param index: (int) index of a pixel
+        :param M:
+        :return:
+        """
+        if index < 0 or index >= M ** 2:
+            raise Exception("Index of pixel is out of bounds")
+        return cls(index % M, index // M, M)
+
+    @classmethod
+    def random(cls, M):
+        x, y = np.random.randint(0, M, 2)
+        return Particle(x, y, M)
+
     def get_position(self):
         """
         get_position returns the current position of the particle.
         :return:
         """
         return self.pos[X], self.pos[Y]
+
+    def set_new_position(self, x: int, y: int):
+
+        self.pos = [x, y]
 
     def move(self, direction: int) -> None:
         """
@@ -44,18 +67,6 @@ class Particle:
 
         self.pos[X] = (self.pos[X] + update[X]) % self.M
         self.pos[Y] = (self.pos[Y] + update[Y]) % self.M
-
-    @classmethod
-    def from_index(cls, index, M):
-        """
-        from_index method creates a Particle object from the index of a pixel of the image.
-        :param index: (int) index of a pixel
-        :param M:
-        :return:
-        """
-        if index < 0 or index >= M ** 2:
-            raise Exception("Index of pixel is out of bounds")
-        return cls(index % M, index // M, M)
 
     def get_nbr_positions(self) -> list:
         """
