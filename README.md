@@ -9,27 +9,20 @@ Computer simluate DLA.
 
 
 Run:
-`python dlasimulation.py dimension stickiness drift max_dist iteration folder_path from_edge frame_count`
+`python dlasimulation.py dimension stickiness drift radius iteration folder_path from_edge frame_count`
 
 Example: ``python dlasimulation.py 501 0.5 2 500 40000 simulation_results/frames false 10 ``
 
 * dimension - (integer) starting from 501. Dimension of Image or Field
 * stickiness - (float) between 0 and 1. float) the stickiness factor which determines the probability of a particle aggregating
 * drift - (float) greater than 0. the factor of drift towards the center. Higher the drift more strongly is the attraction to the center
-* max_dist - (integer) represents the maximum allowed squared distance between 
-the particle and the aggregated particles before the random walk begins.
+* radius - (integer) represents the maximum allowed squared distance between 
+the particle and the aggregated particles. If particle goes outside the radius of the nearest aggregated particle the random walk restarts.
  If greater the particle is regenerated
  
  ## Objects
  * [Particle](Particle.py) - A particle object performs the random walk. Assumption -  It can move to any of the 8 neighbouring pixels depending on the direction specified to it. 
-    - NorthWest
-    - North
-    - NorthEast
-    - East
-    - SouthEast
-    - South
-    - SouthWest
-    - West
+    Directions - NorthWest, North, NorthEast, East, SouthEast, South, SouthWest, West
  * [Field](Field.py) - Field / "Image" captures the particle movements and aggregation. The Field object allows certain customizations to the particle movements. Initially the field is empty with one particle at the center.
  * [DlaSimulation](dlasimulation.py) - DlaSimulation simulates the Diffusion Limited Aggregation and stores 
  images at regular intervals
@@ -70,15 +63,15 @@ the particle and the aggregated particles before the random walk begins.
    - The particle drifts towards the nearest aggregated particle
 
  ## [Simulation Results](simulation_results)
- * [sim1](simulation_results/sim1) - stickiness factor = 1, max_dist = 1000, iterations = 2000, attractor = center
+ * [sim1](simulation_results/sim_1_loop.gif) - stickiness factor = 1, max_dist = 1000, iterations = 2000, attractor = center
  <img align="center" src="simulation_results/sim_1_loop.gif" width="300" height="300" />
  
- * [sim2](simulation_results/sim4) -  stickiness factor = 0.5, max_dist = 500, iterations = 3500, attractor = center
+ * [sim2](simulation_results/sim_5_loop.gif) -  stickiness factor = 0.5, max_dist = 500, iterations = 3500, attractor = center
  <img align="center" src="simulation_results/sim_5_loop.gif" width="300" height="300" />
  
-  * [sim3](simulation_results/sim5) -  stickiness factor = 0.5, max_dist = 500, iterations = 3500, attractor = nearest neighbour
+  * [sim3](simulation_results/sim_14_loop.gif) -  stickiness factor = 0.5, max_dist = 500, iterations = 3500, attractor = nearest neighbour
  <img align="center" src="simulation_results/sim_14_loop.gif" width="300" height="300" />
  
-  * [sim4](simulation_results/sim8) -  stickiness factor = 0.2, max_dist = 300, iterations = 20000, attractor = nearest neighbour
+  * [sim4](simulation_results/sim_15_loop.gif) -  stickiness factor = 0.2, max_dist = 300, iterations = 20000, attractor = nearest neighbour
  <img align="center" src="simulation_results/sim_15_loop.gif" width="300" height="300" />
  

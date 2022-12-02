@@ -19,7 +19,7 @@ class DlaSimulation(object):
     def __init__(self, dimension,
                  stickiness=0.05,
                  drift: float = 1,
-                 max_dist=500,
+                 radius=500,
                  frame_rate=100,
                  iterations=40000,
                  folder_name: str = 'frames',
@@ -30,7 +30,7 @@ class DlaSimulation(object):
         self.field = Field(dim=dimension,
                            stickiness=stickiness,
                            drift=drift,
-                           max_dist=max_dist,
+                           radius=radius,
                            from_edge=from_edge)
 
         if not os.path.isdir(folder_name + '/'):
@@ -78,7 +78,7 @@ if __name__ == "__main__":
     DlaSimulation(dimension=int(sys.argv[1]),
                   stickiness=float(sys.argv[2]),
                   drift=float(sys.argv[3]),
-                  max_dist=int(sys.argv[4]),
+                  radius=int(sys.argv[4]),
                   iterations=int(sys.argv[5]),
                   folder_name=sys.argv[6],
                   from_edge=from_edge,

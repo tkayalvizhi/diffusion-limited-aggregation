@@ -19,7 +19,7 @@ class NoValidDirectionError(Exception):
 
 class Field(object):
 
-    def __init__(self, dim: int, stickiness: float = 1, drift: float = 0.1, max_dist=200, from_edge=False):
+    def __init__(self, dim: int, stickiness: float = 1, drift: float = 0.1, radius=200, from_edge=False):
         """
         The Field / Image class that dictates the particle movements and aggregation.
         :param dim: (int) width / height of Field -
@@ -29,7 +29,7 @@ class Field(object):
                     0 -> 0% - no drift
                     1 -> 100% more - doubles the probability of moving in the direction of the attractor
                     2 -> 200% more - triples the probability of moving in the direction of the attractor
-        :param max_dist: (int) maximum distance away from the nearest aggregated particle
+        :param radius: (int) maximum square distance away from the nearest aggregated particle
         :param from_edge: (bool) indicator for particle to start random walk from edge of field
         """
 
@@ -47,7 +47,7 @@ class Field(object):
             raise Exception("drift must be between 0 and 1")
         self.drift = drift
 
-        self.max_dist = max_dist
+        self.max_dist = radius
         self.from_edge = from_edge
 
         # matrix indicating if pixel is occupied
