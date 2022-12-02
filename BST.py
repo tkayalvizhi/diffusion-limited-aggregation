@@ -52,7 +52,7 @@ class BinarySearchTree:
 
     def contains(self, pos: list):
         if pos is None:
-            raise Exception("Null argument to insert()")
+            raise Exception("Null argument to contains()")
 
         return self.__contains__(self.root, pos, X_AXIS)
 
@@ -117,7 +117,7 @@ class BinarySearchTree:
             second = node.left
 
         nearest = self.__closer_distance__(pos, self.__nearest_neighbour__(first, pos), node)
-        if nearest.dist_to(pos) >= comp:
+        if nearest.dist_to(pos) > comp ** 2:
             nearest = self.__closer_distance__(pos, self.__nearest_neighbour__(second, pos), nearest)
 
         return nearest
@@ -130,4 +130,4 @@ if __name__ == "__main__":
     bst.insert([9, 9])
     # bst.insert([2, 2])
 
-    print(bst.nearest_neighbour([2, 2]).pos)
+    print(bst.nearest_neighbour([2, 2]))
